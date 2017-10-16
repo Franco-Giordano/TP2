@@ -72,7 +72,6 @@ def terminos_en_archivo(ruta):
 			terminos_linea = re.split("\W+",linea_sin_salto)
 			for palabra in terminos_linea:
 				terminos_del_archivo += [palabra]
-
 	return remover_repetidos(terminos_del_archivo)
 
 def recibir_comandos():
@@ -91,6 +90,9 @@ def remover_repetidos(lista):
 	''''''
 	return list(set(lista))
 
+def obtener_elem_compartidos_entre(lista1, lista2):
+	return [elemento1 for elemento1 in lista1 if elemento1 in lista2]
+
 def decidir_comando_especial(cadena):
 	''''''
 	if cadena == "/*":
@@ -108,17 +110,18 @@ def main():
 	''''''
 	print("Indexando archivos",end="",flush=True)
 	sleep(0.5)
-	for letra in "...":
-		print(letra,flush=True,end="")
+	for punto in "...":
+		print(punto,flush=True,end="")
 		sleep(0.5)
 
 	indice_invertido,cantidad = indexar_archivos()
 	print("\nListo! Se indexaron {} archivos".format(cantidad))
 	print("Puedes utlizar '/*' para salir en cualquier momento, '/h' para ayuda o '/c' para creditos\n")
 
+
 	while True:
 		modo_busqueda,terminos_a_buscar,input_raw = recibir_comandos()
-
+		
 		if input_raw.startswith("/"):
 			decidir_comando_especial(input_raw)
 			continue
@@ -132,15 +135,17 @@ def main():
 		
 
 		elif modo_busqueda == "and:":
-			for termino in terminos_a_buscar:
+			for i,termino in enumerate(terminos_a_buscar):
 				if termino not in indice_invertido:
+					rutas_coincidentes = []
 					break
-				rutas_coincidentes = [ruta for ruta in indice_invertido[termino] if ruta in rutas_coincidentes]
-
+				if i == 0:
+					rutas_coincidentes = indice_invertido[termino]
+				rutas_coincidentes = obtener_elem_compartidos_entre(rutas_coincidentes,indice_invertido[termino])
 
 		elif modo_busqueda == "not:":
 			if not un_solo_term_a_buscar:
-				print("La busqueda 'not' recibe un solo termino! Intente nuevamente")
+				print("La busqueda 'not' recibe un solo termino! Intente nuevamente\n")
 				continue
 			rutas_no_validas = indice_invertido.get(terminos_a_buscar[0], [])
 			for termino,rutas in indice_invertido.items():
