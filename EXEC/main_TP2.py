@@ -5,7 +5,25 @@ import re
 EXTENSIONES_BUSCADAS = (".txt",".md",".py",".c")
 RUTA_CODIGO = os.path.join(".",os.path.basename(__file__))
 MODOS = ("and:","or:","not:")
-AYUDA = """  """
+
+AYUDA = """
+Se disponen de tres modos de busqueda: and, or, not. Las coincidencias son aquellos archivos que en su ruta o nombre respeten las condiciones de busqueda. En caso de ser archivos '.txt', '.md', '.py' o '.c' se buscara terminos dentro de los mismos, analizando su contenido.
+Introduciendo <comando>: <terminos> se realiza una consulta. Un termino debe coincidir completamente al encontrado para ser contado como valido. DEBE DEJARSE UN ESPACIO LUEGO DE LOS DOS PUNTOS(':')
+
+Busqueda OR:
+	Ejecutada con 'or: <terminos>' o '<terminos>'. Devuelve las rutas de los archivos que coincidan con AL MENOS un termino.
+
+Busqueda AND:
+	Ejecutada con 'and: <terminos>'. Devuelve las rutas de los archivos que coincidan con TODOS los terminos.
+
+Busqueda NOT:
+	Ejecutada con 'not: <termino>'. Devuelve las rutas de los archivos que NO coinciden con el unico termino dado.
+"""
+
+CREDITOS = """TP2 - Catedra Wachenchauzer - Algoritmos y Programacion I - FIUBA 2017
+Franco Giordano - 100608
+"""
+
 
 def indexar_archivos():
 	"""dsadsa"""
@@ -72,12 +90,14 @@ def remover_repetidos(lista):
 
 def decidir_comando_especial(cadena):
 	if cadena == "/*":
+		print("Adios!\n")
 		exit()
 	elif cadena == "/h":
 		print(AYUDA)
 	elif cadena == "/c":
 		print(CREDITOS)
-
+	else:
+		print("Comando no reconocido. ¿Has probado con '/h'?")
 
 
 def main():
@@ -114,7 +134,10 @@ def main():
 				rutas_coincidentes = [ruta for ruta in indice_invertido[termino] if ruta in rutas_coincidentes]
 
 
-		elif modo_busqueda == "not:" and un_solo_term_a_buscar:
+		elif modo_busqueda == "not:":
+			if not un_solo_term_a_buscar:
+				print("La busqueda 'not' recibe un solo termino! Intente nuevamente")
+				continue
 			rutas_no_validas = indice_invertido.get(terminos_a_buscar[0], [])
 			for termino,rutas in indice_invertido.items():
 				rutas_coincidentes += rutas
@@ -128,5 +151,9 @@ def main():
 		for r_coinc in rutas_coincidentes:
 			print(r_coinc)
 		print()
+
+
+
+
 
 main()
