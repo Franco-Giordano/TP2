@@ -7,22 +7,24 @@ RUTA_CODIGO = os.path.join(".",os.path.basename(__file__))
 MODOS = ("and:","or:","not:")
 
 AYUDA = """
-Se disponen de tres modos de busqueda: and, or, not. Las coincidencias son aquellos archivos que en su ruta o nombre respeten las condiciones de busqueda. En caso de ser archivos '.txt', '.md', '.py' o '.c' se buscara terminos dentro de los mismos, analizando su contenido.
+Se disponen de tres modos de busqueda: AND,OR o NOT. Las coincidencias son aquellos archivos que en su ruta o nombre respeten las condiciones de busqueda. En caso de ser archivos '.txt', '.md', '.py' o '.c' se buscara terminos dentro de los mismos, analizando su contenido.
 Introduciendo <comando>: <terminos> se realiza una consulta. Un termino debe coincidir completamente al encontrado para ser contado como valido. DEBE DEJARSE UN ESPACIO LUEGO DE LOS DOS PUNTOS(':')
 
 Busqueda OR:
-	Ejecutada con 'or: <terminos>' o '<terminos>'. Devuelve las rutas de los archivos que coincidan con AL MENOS un termino.
+	Ejecutada con 'OR: <terminos>' o '<terminos>'. Devuelve las rutas de los archivos que coincidan con AL MENOS un termino.
 
 Busqueda AND:
-	Ejecutada con 'and: <terminos>'. Devuelve las rutas de los archivos que coincidan con TODOS los terminos.
+	Ejecutada con 'AND: <terminos>'. Devuelve las rutas de los archivos que coincidan con TODOS los terminos.
 
 Busqueda NOT:
-	Ejecutada con 'not: <termino>'. Devuelve las rutas de los archivos que NO coinciden con el unico termino dado.
+	Ejecutada con 'NOT: <termino>'. Devuelve las rutas de los archivos que NO coinciden con el unico termino dado.
 """
 
 CREDITOS = """TP2 - Catedra Wachenchauzer - Algoritmos y Programacion I - FIUBA 2017
 Franco Giordano - 100608
 """
+
+
 
 
 def indexar_archivos():
@@ -66,7 +68,7 @@ def terminos_en_archivo(ruta):
 	with open(ruta) as archivo:
 		terminos_del_archivo = []
 		for linea in archivo:
-			linea_sin_salto = linea.rstrip("\n")
+			linea_sin_salto = linea.rstrip("\n").lower()
 			terminos_linea = re.split("\W+",linea_sin_salto)
 			for palabra in terminos_linea:
 				terminos_del_archivo += [palabra]
@@ -86,9 +88,11 @@ def recibir_comandos():
 	return modo_elegido,palabras,input_raw
 
 def remover_repetidos(lista):
+	''''''
 	return list(set(lista))
 
 def decidir_comando_especial(cadena):
+	''''''
 	if cadena == "/*":
 		print("Adios!\n")
 		exit()
@@ -101,7 +105,7 @@ def decidir_comando_especial(cadena):
 
 
 def main():
-
+	''''''
 	print("Indexando archivos",end="",flush=True)
 	sleep(0.5)
 	for letra in "...":
